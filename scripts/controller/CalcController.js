@@ -5,19 +5,22 @@ class CalcController {
         this._locale = 'pt-BR';
         this._displayCalcEl = document.querySelector("#display");
         this._dateEl = document.querySelector("#data");
-        this._timeEl = document.querySelector("#hora");
-
-        this._displayCalc = "0";
+        this._timeEl = document.querySelector("#hora");        
+        this._displayCalc =  "0";
         this._currentDate;
         this.initialize();
         this.initButtonsEvents();
     }
 
+    //Inicia a aplicação
     initialize() {
+
         this.setDisplayDateTime();
+
         setInterval(() => {
             this.setDisplayDateTime();
         }, 1000);
+
     }
 
     clearAll() {
@@ -35,7 +38,7 @@ class CalcController {
         this._operation[this._operation.length - 1] = value;
     }
 
-
+    //É um operador
     isOperator(value) {
         return (['+', '-', '*', '%', '/'].indexOf(value) > -1);
     }
@@ -43,35 +46,81 @@ class CalcController {
 
         this._operation.push(value);
 
-        if (this._operation.length > 3) {
+        if (this._operation.length > 3) {            
 
-            let last = this._operation.pop();
-            console.log(this._operation);
+            this.calc();
+           
         }
     }
 
+    //Calcular
+    calc(){
+
+        let last = this._operation.pop();
+
+        let result = eval(this._operation.join(""));
+
+        this._operation=[result,last];
+
+        this.setLastNumberToDisplay();
+
+    }
+
+    //Inseri no Display
+    setLastNumberToDisplay(){
+
+        let lastNumber;
+
+        for(let i = this._operation.length - 1; i >= 0;i--){
+            
+            if(!this.isOperator(this._operation[i])){
+                lastNumber = this._operation[i];
+                break;
+            }
+        }
+
+        this.displayCalc = lastNumber;
+
+    }
+
+    //Adiciona uma nova operação
     addOperation(value) {
 
         if (isNaN(this.getLastOperation())) {
+
             if (this.isOperator(value)) {
+
                 this.setLastOperation(value);
+
             } else if (isNaN(value)) {
-                console.log('Outra cois', value);
+
+                console.log('Outra coisa', value);
+
             } else {
+
                 this.pushOperator(value);
+                this.setLastNumberToDisplay();
             }
         } else {
 
             if (this.isOperator(value)) {
+
                 this.pushOperator(value);
+
             } else {
+
                 let newValue = this.getLastOperation().toString() + value.toString();
+
                 this.setLastOperation(parseInt(newValue));
+
+                this.setLastNumberToDisplay();
+                
             }
 
         }
     }
 
+    //tratamento de erro
     setError() {
         this.displayCalc = "Error";
     }
@@ -144,22 +193,24 @@ class CalcController {
 
     }
 
+    //Formata a Data
     setDisplayDateTime() {
         this.displayDate = this.currentDate.toLocaleDateString(this._locale, {
             day: "2-digit",
             month: "long",
             year: "numeric"
         })
-        this.displaytime = this.currentDate.toLocaleTimeString(this._locale)
-
-
+        this.displaytime = this.currentDate.toLocaleTimeString(this._locale);
     }
+    
     get displaytime() {
         return this._timeEl.innerHTML;
     }
+
     set displaytime(value) {
         return this._timeEl.innerHTML = value;
     }
+
     get displayDate() {
         return this._dateEl.innerHTML;
     }
@@ -169,11 +220,11 @@ class CalcController {
     }
 
     get displayCalc() {
-        return this._displayCalc;
+        return this._displayCalcEl.innerHTML;
     }
 
     set displayCalc(value) {
-        this._displayCalc = value;
+        return this._displayCalcEl.innerHTML = value;
     }
     get currentDate() {
         return new Date();
