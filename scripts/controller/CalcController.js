@@ -8,15 +8,19 @@ constructor(){
 
     this._displayCalc = "0";
     this._currentDate;
-    this.initialze();
+    this.initialize();
 }
-initialze(){
+initialize(){
     this.setDisplayDateTime();
     setInterval(()=>{
         this.setDisplayDateTime();
     },1000 );
 
 
+}
+
+initButtonsEvents(){
+    let buttons = document.querySelectorAll("#buttons > g, #parts > g");
 }
 
 setDisplayDateTime(){
