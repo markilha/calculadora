@@ -135,7 +135,7 @@ class CalcController {
     clearAll() {
         this._operation = [];
         this._lastNumber='';
-        this._operation = '';
+        //this._operation = '';
 
         this.setLastNumberToDisplay();
     }
@@ -404,7 +404,13 @@ class CalcController {
     }
 
     set displayCalc(value) {
-        return this._displayCalcEl.innerHTML = value;
+        
+        if(value.toString().length > 10){
+            this.setError();
+            return false;
+        }
+
+        this._displayCalcEl.innerHTML = value;
     }
     get currentDate() {
         return new Date();
